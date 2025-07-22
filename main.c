@@ -9,16 +9,16 @@ game logic
  - Menu functions are responsible for input and output
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#ifdef _WIN32
-    #define CLEAR "cls"
-#else
-    #define CLEAR "clear"
-#endif
-#define clear() system(CLEAR)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "game.c"
+#include "menus.c"
+
+
+FILE* fdRanking;
+
 
 enum main_menu {
     JOGAR = 1,
@@ -35,12 +35,8 @@ enum config_menu {
     VOLTAR_MENU_PRINCIPAL
 };
 
-FILE* fdRanking;
-
-void printMainMenu();
+void mainMenu();
 void configMenu();
-void printConfigMenu();
-void waitForEnter();
 void zerarRanking();
 
 int main() {
@@ -53,54 +49,41 @@ int main() {
     printf("Digite seu nickname para comecar: ");
     fgets(username, 50, stdin);
 
-    int opcode;
-    printMainMenu();
-    scanf("%d", &opcode);
+    mainMenu();
+}
 
-    switch (opcode)
-    {
-    case JOGAR:
-        
+
+
+void mainMenu() {
+    while(1) {
+        printMainMenu();
+
+        int opcode;
+        scanf("%d", &opcode);
+
+        switch (opcode)
+        {
+        case JOGAR:
+            
+            break;
+        case CONFIG:
+            configMenu();
+            break;
+        case INTRUCOES:
+            break;
+        case RANKING:
+            break;
+        case SAIR:
+            return;
+            break;
+        default:
+            /* invalid option */
+            printf("\nOpcao invalida, pressione Enter para continuar...");
+            waitForEnter();
         break;
-    case CONFIG:
-        configMenu();
-        break;
-    case INTRUCOES:
-    break;
-    case RANKING:
-    break;
-    case SAIR:
-        return 0;
-        break;
-    default:
-    break;
+        }
     }
 }
-
-void waitForEnter() {
-    int c;
-    // Flush input buffer
-    while ((c = getchar()) != '\n' && c != EOF);
-    // Wait for Enter
-    getchar();
-}
-
-
-void printMainMenu() {
-    clear();
-    printf("=====================================\n");
-    printf("         BEM-VINDO AO JOGO!          \n");
-    printf("=====================================\n\n");
-    printf(" [1] Jogar\n");
-    printf(" [2] Configuracoes\n");
-    printf(" [3] Instrucoes\n");
-    printf(" [4] Ranking\n");
-    printf(" [5] Sair\n");
-    printf("-------------------------------------\n");
-    printf("Digite sua escolha: ");
-    return;
-}
-
 
 void configMenu() {
     int opcode;
@@ -135,11 +118,11 @@ void configMenu() {
             break;
 
         case VOLTAR_MENU_PRINCIPAL:
-            
+            return;
             break;
 
         default:
-            /* Opcao invalida */
+            /* invalid option */
             printf("\nOpcao invalida, pressione Enter para continuar...");
             waitForEnter();
             break;
@@ -147,21 +130,6 @@ void configMenu() {
     }
 
 
-}
-
-void printConfigMenu() {
-    clear();
-    printf("=====================================\n");
-    printf("         CONFIGURACOES DO JOGO       \n");
-    printf("=====================================\n\n");
-    printf(" [1] Zerar ranking\n");
-    printf(" [2] Modo blind (Em desenvolvimento..)\n");
-    printf(" [3] Editor de fases (Em desenvolvimento..)\n");
-    printf(" [4] Voltar ao menu principal\n");
-    printf("-------------------------------------\n");
-    printf("Digite sua escolha: ");
-
-    return;
 }
 
 void zerarRanking() {
