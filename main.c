@@ -16,10 +16,6 @@ game logic
 #include "game.c"
 #include "menus.c"
 
-
-FILE* fdRanking;
-
-
 enum main_menu {
     JOGAR = 1,
     CONFIG,
@@ -35,12 +31,15 @@ enum config_menu {
     VOLTAR_MENU_PRINCIPAL
 };
 
+
 void mainMenu();
 void configMenu();
 void zerarRanking();
 
+char username[50];
+FILE* fdRanking;
+
 int main() {
-    char username[50];
 
     clear();
     printf("=====================================\n");
@@ -59,12 +58,13 @@ void mainMenu() {
         printMainMenu();
 
         int opcode;
-        scanf("%d", &opcode);
+
+        scanf(" %d", &opcode);
 
         switch (opcode)
         {
         case JOGAR:
-            
+            setupLevels();
             break;
         case CONFIG:
             configMenu();

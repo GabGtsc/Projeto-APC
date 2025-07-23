@@ -9,6 +9,9 @@
 #endif
 #define clear() system(CLEAR)
 
+#ifndef MENUS_C
+#define MENUS_C
+
 void printMainMenu() {
     clear();
     printf("=====================================\n");
@@ -43,3 +46,5 @@ void waitForEnter() {
     while ((c = getchar()) != '\n' && c != EOF);
     getchar();
 }
+
+#endif // MENUS_C

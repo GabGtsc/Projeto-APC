@@ -8,7 +8,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "C:\\Code\\Provas\\Projeto APC\\main.c",
                 "-o",
                 "${fileDirname}\\out.exe"
             ],
