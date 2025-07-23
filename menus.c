@@ -43,7 +43,7 @@ void printConfigMenu() {
 
 void waitForEnter() {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n');
     getchar();
 }
 
