@@ -40,9 +40,6 @@ char username[50];
 FILE* fdRanking;
 
 int main() {
-
-    setupLevels();
-
     clear();
     printf("=====================================\n");
     printf("         BEM-VINDO AO JOGO!          \n");

@@ -7,14 +7,17 @@
 
 #include "menus.c"
 
+#define MATRIX_SIDE 10
+
 void cleanVariables();
-void readLevel();
+int readLevel();
 void padMatrix();
 void printMatrix();
 void gameLoop();
+int checkColumn(int col);
 
-char mat[10][10]; //global, matrix funcs will directly change as a side effect, no passing pointers 
-int heights[10];
+char mat[MATRIX_SIDE][MATRIX_SIDE]; //global, matrix funcs will directly change as a side effect, no passing pointers 
+int heights[MATRIX_SIDE];
 int maxHeigth;
 int colCount;
 
@@ -23,7 +26,7 @@ int currLevel = 0;
 
 
 void setupLevels() {
-    //
+    
     gameFd = fopen("entrada.txt", "r");
     if(gameFd == NULL) {
         printf("\n\nErro! Ao abrir arquivo de entradas\n");
@@ -32,22 +35,36 @@ void setupLevels() {
         return;
     }
 
+    int isLastLevel = 0;
+
     while(1) { 
     cleanVariables();
-    readLevel();
+    isLastLevel = readLevel();
     padMatrix();
     gameLoop();
+    if(isLastLevel) {break;}
     }
+
+    clear();
+    printf("TERMINOUAAAAAA\n");
     return;
 }
 
 void gameLoop() {
+    printMatrix();
+    printf("Digite seu movimento: ");
 
     int srcCol, destCol;
+    int parabenize = 0;
     while(1) {
-        printMatrix();
-
         // check if move is legal
+        printMatrix();
+        if(parabenize) {
+            printf("Completou uma coluna! PARABENS!!!\n");
+            parabenize = 0;
+        }
+        printf("Digite seu movimento: ");
+
         int scanRes = scanf("%d %d", &srcCol, &destCol);
         if(scanRes != 2) {
             printf("Entrada invalida! Digite dois numeros. ");
@@ -98,8 +115,35 @@ void gameLoop() {
             }
         }
 
+        if(checkColumn(destCol) == 1) {parabenize = 1;}
+        if(checkColumn(destCol) == 2) {break;}
     }
+
+    printMatrix();
+    printf("Terminou a fase, PARABENS!!!!!\n");
+    printf("Aperte Enter para continuar... ");
+    waitForEnter();
 }
+
+int checkColumn(int col) {
+    char c = mat[0][col];
+
+    // 0 se não, 1 se sim, 2 se todas
+    for(int row = maxHeigth - 1; row >= 0; row--) {
+        if(mat[row][col] != c) return 0;
+    }
+
+    // se a coluna estiver certa, checar se o resto está
+    for(int col = 0; col < colCount; col++) {
+        char c = mat[0][col];
+        for(int row = 0; row < maxHeigth; row++) {
+            if(mat[row][col] != c) return 1;
+        }
+    }
+
+    return 2;
+}
+
 
 void printMatrix() {
 
@@ -121,16 +165,13 @@ void printMatrix() {
             }
     }
     putchar('\n');
-
-    printf("Digite seu movimento: ");
-
     return;
 }
 
 void cleanVariables() {
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < MATRIX_SIDE; i++) {
         heights[i] = -1;
-        for(int j = 0; j < 10; j++) {
+        for(int j = 0; j < MATRIX_SIDE; j++) {
             mat[i][j] = -1;
         }
     }
@@ -139,14 +180,15 @@ void cleanVariables() {
     return;
 }
 
-void readLevel() {
+int readLevel() {
     // reads the level from entrada.txt, assumes file is already open
     int currHeight;
     char c;
 
+    int reachedEOF = 0;
     int col;
-    for(col = 0; col < 10; col++) {
-        fscanf(gameFd, " %c", &c);
+    for(col = 0; col < MATRIX_SIDE; col++) {
+        if(fscanf(gameFd, " %c", &c) != 1) {reachedEOF = 1; break;}
         if(c == '-') break;
         
         currHeight = c - '0';
@@ -164,7 +206,7 @@ void readLevel() {
 
     colCount = col;
 
-    return;
+    return reachedEOF;
 }
 
 void padMatrix() {
