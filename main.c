@@ -1,6 +1,9 @@
 /*
 PROJETO FINAL APC 2025.1 - Ball APC
 Gabriel Targino da Silveira Chaves - 251021072
+
+Codigo modularizado e distribuido entre arquivos fonte, utilizando #include pra conectar. Sem header files
+pois a complexidade adicional ao compilar foi julgada desnecessaria para um projeto pequeno como esse.
  */
 #include "src/game.c"
 #include "src/menus.c"
@@ -26,7 +29,7 @@ void configMenu();
 void cleanRanking();
 void printInstructions();
 
-Player curr;
+Player player;
 
 int main() {
     while (1) {
@@ -35,10 +38,10 @@ int main() {
         printf("    BEM-VINDO AO BAPC! (Ball APC)    \n");
         printf("=====================================\n\n");
         printf("Digite seu nickname para comecar (20 char): ");
-        fgets(curr.name, 21, stdin);
-        curr.name[strcspn(curr.name, "\n")] = 0;  // Remove trailing newline
+        fgets(player.name, 21, stdin);
+        player.name[strcspn(player.name, "\n")] = 0;  // Remove trailing newline
 
-        if (curr.name[0] != '\n')
+        if (player.name[0] != '\n')
             break;
     }
 
@@ -55,8 +58,8 @@ void mainMenu() {
 
         switch (opcode) {
             case JOGAR:
-                curr.score = setupGame();
-                if(curr.score != 0) addRank(curr);
+                player.score = setupGame();
+                if(player.score != 0) addRank(player);
                 break;
             case CONFIG:
                 configMenu();
