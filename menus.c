@@ -7,6 +7,7 @@
 #else
 #define CLEAR "clear"
 #endif
+
 #define clear() system(CLEAR)
 
 #ifndef MENUS_C
@@ -47,4 +48,4 @@ void waitForEnter() {
     getchar();
 }
 
-#endif // MENUS_C
+#endif  // MENUS_C
