@@ -1,12 +1,6 @@
 /*
-ask and store name
-print menu, menu logic
-game logic
-*/
-
-/*
- - Menu print functions are always responsible for clearing the screen
- - Menu functions are responsible for input and output
+PROJETO FINAL APC 2025.1 - Ball APC
+Gabriel Targino da Silveira Chaves - 251021072
  */
 #include "game.c"
 #include "menus.c"
