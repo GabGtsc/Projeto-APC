@@ -2,9 +2,9 @@
 PROJETO FINAL APC 2025.1 - Ball APC
 Gabriel Targino da Silveira Chaves - 251021072
  */
-#include "game.c"
-#include "menus.c"
-#include "ranking.c"
+#include "src/game.c"
+#include "src/menus.c"
+#include "src/ranking.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,8 +34,8 @@ int main() {
         printf("=====================================\n");
         printf("    BEM-VINDO AO BAPC! (Ball APC)    \n");
         printf("=====================================\n\n");
-        printf("Digite seu nickname para comecar: ");
-        fgets(curr.name, 20, stdin);
+        printf("Digite seu nickname para comecar (20 char): ");
+        fgets(curr.name, 21, stdin);
         curr.name[strcspn(curr.name, "\n")] = 0;  // Remove trailing newline
 
         if (curr.name[0] != '\n')
@@ -63,7 +63,6 @@ void mainMenu() {
                 break;
             case INTRUCOES:
                 printInstructions();
-                waitForEnter();
                 break;
             case RANKING:
                 printRankings();
@@ -128,7 +127,7 @@ void configMenu() {
 void printInstructions() {
     clear();
 
-    FILE* fdInstructions = fopen("intructions.txt", "r");
+    FILE* fdInstructions = fopen("data/intructions.txt", "r");
     if(fdInstructions == NULL) {
         printf("ERRO! Ao tentar ler arquivo de instrucoes\n");
         printf("Favor conferir diretorio\n");
@@ -146,5 +145,6 @@ void printInstructions() {
     }
 
     printf("\nPressione enter para retornar ao menu principal...");
+    waitForEnter();
     return;
 }

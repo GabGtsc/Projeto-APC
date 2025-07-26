@@ -8,7 +8,7 @@
 
 
 typedef struct {
-    char name[20];
+    char name[21];
     int score;
 } Player;
 
@@ -18,7 +18,7 @@ void sortPlayers(Player arr[], int count);
 int comparePlayers(Player a, Player b);
 
 void cleanRanking() {
-    FILE* fdRanking = fopen("ranking.bin", "wb");
+    FILE* fdRanking = fopen("./data/ranking.bin", "wb");
     if (fdRanking == NULL) {
         perror("ERRO! Falha ao abrir arquivo de ranking.\n");
         printf("Pressione Enter para continuar...");
@@ -30,7 +30,7 @@ void cleanRanking() {
 }
 
 void addRank(Player rank) {
-    FILE* fdRanking = fopen("ranking.bin", "ab");
+    FILE* fdRanking = fopen("./data/ranking.bin", "ab");
     if (fdRanking == NULL) {
         perror("ERRO! Falha ao abrir arquivo de ranking.\n");
         printf("Pressione Enter para continuar...");
@@ -43,7 +43,7 @@ void addRank(Player rank) {
 }
 
 void printRankings() {
-    FILE* fdRanking = fopen("ranking.bin", "rb");
+    FILE* fdRanking = fopen("./data/ranking.bin", "rb");
     if (fdRanking == NULL) {
         perror("ERRO! Falha ao abrir arquivo de ranking.\n");
         printf("Pressione Enter para continuar...");

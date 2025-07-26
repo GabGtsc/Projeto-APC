@@ -36,7 +36,7 @@ FILE* gameFd;
 int currLevel = 0;
 
 int setupGame() {
-    gameFd = fopen("entrada.txt", "r");
+    gameFd = fopen("./data/entrada.txt", "r");
     if (gameFd == NULL) {
         printf("\n\nErro! Ao abrir arquivo de entradas\n");
         printf("Pressione Enter para continuar...");
