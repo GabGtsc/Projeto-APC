@@ -15,6 +15,8 @@ void padMatrix();
 void printMatrix();
 void gameLoop();
 int checkColumn(int col);
+void executeMove(int srcCol, int destCol);
+int isMoveLegal(int srcCol, int destCol);
 
 char mat[MATRIX_SIDE][MATRIX_SIDE]; //global, matrix funcs will directly change as a side effect, no passing pointers 
 int heights[MATRIX_SIDE];
@@ -27,7 +29,7 @@ int currLevel = 0;
 
 void setupLevels() {
     
-    gameFd = fopen("entrada.txt", "r");
+    gameFd = fopen("entrada_v2.txt", "r");
     if(gameFd == NULL) {
         printf("\n\nErro! Ao abrir arquivo de entradas\n");
         printf("Pressione Enter para continuar...");
@@ -45,8 +47,7 @@ void setupLevels() {
     if(isLastLevel) {break;}
     }
 
-    clear();
-    printf("TERMINOUAAAAAA\n");
+    //TODO: Game end logic and prints
     return;
 }
 
@@ -65,8 +66,7 @@ void gameLoop() {
         }
         printf("Digite seu movimento: ");
 
-        int scanRes = scanf("%d %d", &srcCol, &destCol);
-        if(scanRes != 2) {
+        if(scanf("%d %d", &srcCol, &destCol) != 2) {
             printf("Entrada invalida! Digite dois numeros. ");
             waitForEnter();
             continue;
@@ -74,46 +74,11 @@ void gameLoop() {
         srcCol -= 1;
         destCol -= 1;
 
-        int srcHeigth = heights[srcCol];
-        int destHeigth = heights[destCol];
-
-        if(srcCol < 0 || srcCol >= colCount || destCol < 0 || destCol >= colCount) {
-            printf("Coluna invalida! Tente novamente. ");
-            waitForEnter();
+        if(!isMoveLegal(srcCol, destCol)) {
             continue;
         }
 
-        if(srcHeigth <= 0) {
-            printf("Coluna origem vazia! Tente novamente. ");
-            waitForEnter();
-            continue;
-        }
-
-        if(destHeigth == maxHeigth) {
-            printf("Coluna destino cheia! Tente novamente. ");
-            waitForEnter();
-            continue;
-        }
-
-        char srcChar = mat[srcHeigth - 1][srcCol]; // char that is being moved
-    
-        if(destHeigth > 0 && srcChar != mat[destHeigth - 1][destCol]) {
-            printf("Topo da coluna destino tem caractere diferente! Tente novamente. ");
-            waitForEnter();
-            continue;
-        }
-
-        // execute move
-        for(int i = heights[srcCol] - 1; i >= 0; i--) {
-            if(mat[i][srcCol] == srcChar && heights[destCol] != maxHeigth) {
-                mat[heights[destCol]][destCol] = mat[i][srcCol];
-                mat[i][srcCol] = ' ';
-                heights[destCol]++;
-                heights[srcCol]--;
-            } else {
-                break;
-            }
-        }
+        executeMove(srcCol, destCol);
 
         if(checkColumn(destCol) == 1) {parabenize = 1;}
         if(checkColumn(destCol) == 2) {break;}
@@ -123,6 +88,51 @@ void gameLoop() {
     printf("Terminou a fase, PARABENS!!!!!\n");
     printf("Aperte Enter para continuar... ");
     waitForEnter();
+}
+
+int isMoveLegal(int srcCol, int destCol) {
+    int srcHeigth = heights[srcCol];
+    int destHeigth = heights[destCol];
+
+    if(srcCol < 0 || srcCol >= colCount || destCol < 0 || destCol >= colCount) {
+        printf("Coluna invalida! Tente novamente. ");
+        waitForEnter();
+        return 0;
+    }
+
+    if(srcHeigth <= 0) {
+        printf("Coluna origem vazia! Tente novamente. ");
+        waitForEnter();
+        return 0;
+    }
+
+    if(destHeigth == maxHeigth) {
+        printf("Coluna destino cheia! Tente novamente. ");
+        waitForEnter();
+        return 0;
+    }
+
+    if(destHeigth > 0 && mat[srcHeigth - 1][srcCol] != mat[destHeigth - 1][destCol]) {
+        printf("Topo da coluna destino tem caractere diferente! Tente novamente. ");
+        waitForEnter();
+        return 0;
+    }
+
+    return 1;
+}
+
+void executeMove(int srcCol, int destCol) {
+    char srcChar = mat[heights[srcCol] - 1][srcCol];
+    for(int i = heights[srcCol] - 1; i >= 0; i--) {
+        if(mat[i][srcCol] == srcChar && heights[destCol] != maxHeigth) {
+            mat[heights[destCol]][destCol] = mat[i][srcCol];
+            mat[i][srcCol] = ' ';
+            heights[destCol]++;
+            heights[srcCol]--;
+        } else {
+            break;
+        }
+    }
 }
 
 int checkColumn(int col) {

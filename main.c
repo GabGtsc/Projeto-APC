@@ -37,19 +37,22 @@ void configMenu();
 void zerarRanking();
 
 char username[50];
-FILE* fdRanking;
 
 int main() {
+
+    while(1) {
     clear();
     printf("=====================================\n");
-    printf("         BEM-VINDO AO JOGO!          \n");
+    printf("    BEM-VINDO AO BAPC! (Ball APC)    \n");
     printf("=====================================\n\n");
     printf("Digite seu nickname para comecar: ");
     fgets(username, 50, stdin);
-
+    username[strcspn(username, "\n")] = 0; // Remove trailing newline
+    
+    if(username[0] != '\n') break;
+    }
     mainMenu();
 }
-
 
 
 void mainMenu() {
@@ -69,12 +72,15 @@ void mainMenu() {
             configMenu();
             break;
         case INTRUCOES:
+            printf("\nNao implementado, pressione Enter para continuar...");
+            waitForEnter();
             break;
         case RANKING:
+            printf("\nNao implementado, pressione Enter para continuar...");
+            waitForEnter();
             break;
         case SAIR:
             return;
-            break;
         default:
             /* invalid option */
             printf("\nOpcao invalida, pressione Enter para continuar...");
@@ -132,8 +138,15 @@ void configMenu() {
 }
 
 void zerarRanking() {
-    fdRanking = fopen("ranking.bin", "wb");
+    FILE* fdRanking = fopen("ranking.bin", "wb");
+    if (fdRanking == NULL) {
+        perror("ERRO! Falha ao abrir arquivo de ranking.\n");
+        printf("Pressione Enter para continuar...");
+        waitForEnter();
+        return;
+    }
     int zero = 0;
     fwrite(&zero, sizeof(int), 1, fdRanking);
+    fclose(fdRanking);
 }
 
