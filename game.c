@@ -6,21 +6,28 @@
 #include <string.h>
 
 #include "menus.c"
+#include "ranking.c"
 
 #define MATRIX_SIDE 10
+
+typedef enum {
+    False = 0,
+    True = 1
+} bool;
 
 void cleanVariables();
 int readLevel();
 void padMatrix();
-void printMatrix();
+void printGame();
 void gameLoop();
 int checkColumn(int col);
 void executeMove(int srcCol, int destCol);
 int isMoveLegal(int srcCol, int destCol);
+void endScreen();
+int promptContinue(int level);
 
-char mat[MATRIX_SIDE]
-        [MATRIX_SIDE];  // global, matrix funcs will directly change as a side
-                        // effect, no passing pointers
+// global, matrix funcs will directly change as a effect, no passing pointers
+char mat[MATRIX_SIDE][MATRIX_SIDE];
 int heights[MATRIX_SIDE];
 int maxHeigth;
 int colCount;
@@ -28,33 +35,61 @@ int colCount;
 FILE* gameFd;
 int currLevel = 0;
 
-void setupLevels() {
+int setupGame() {
     gameFd = fopen("entrada_v2.txt", "r");
     if (gameFd == NULL) {
         printf("\n\nErro! Ao abrir arquivo de entradas\n");
         printf("Pressione Enter para continuar...");
         waitForEnter();
-        return;
+        return 0;
     }
 
-    int isLastLevel = 0;
-
+    bool shouldContinue = 0;
+    bool isLastLevel = 0;
+    int completedLevels = 0;
     while (1) {
         cleanVariables();
         isLastLevel = readLevel();
         padMatrix();
         gameLoop();
-        if (isLastLevel) {
-            break;
+        completedLevels++;
+        if(!isLastLevel) {
+            shouldContinue = promptContinue(completedLevels);
+        } else {
+            endScreen();
+            shouldContinue = False;
         }
+        if(!shouldContinue) break;
     }
 
-    // TODO: Game end logic and prints
+    return completedLevels;
+}
+
+void endScreen() {
+    printEndScreenMenu();
+    waitForEnter();
     return;
 }
 
+int promptContinue(int level) {
+    while(1) {
+        printPromptContinueMenu(level);
+        char c;
+        scanf(" %c", &c);
+
+        if(c == 's' || c == 'S') {
+            return 1;
+        } else if (c == 'n' || c == 'N') {
+            return 0;
+        } else {
+            printf("Input inválido! Por favor digite S ou N\n");
+            waitForEnter();
+        }
+    }
+}
+
 void gameLoop() {
-    printMatrix();
+    printGame();
     printf("Digite seu movimento: ");
 
     int srcCol, destCol;
@@ -62,7 +97,7 @@ void gameLoop() {
 
     while (1) {
         // check if move is legal
-        printMatrix();
+        printGame();
         if (parabenize) {
             printf("Completou uma coluna! PARABENS!!!\n");
             parabenize = 0;
@@ -91,7 +126,7 @@ void gameLoop() {
         }
     }
 
-    printMatrix();
+    printGame();
     printf("Terminou a fase, PARABENS!!!!!\n");
     printf("Aperte Enter para continuar... ");
     waitForEnter();
@@ -122,9 +157,7 @@ int isMoveLegal(int srcCol, int destCol) {
 
     if (destHeigth > 0 &&
         mat[srcHeigth - 1][srcCol] != mat[destHeigth - 1][destCol]) {
-        printf(
-            "Topo da coluna destino tem caractere diferente! Tente "
-            "novamente. ");
+        printf("Topo da coluna destino tem caractere diferente! Tente novamente. ");
         waitForEnter();
         return 0;
     }
@@ -167,7 +200,7 @@ int checkColumn(int col) {
     return 2;
 }
 
-void printMatrix() {
+void printGame() {
     clear();
     printf("=========== JOGO ===========\n\n");
     for (int row = maxHeigth - 1; row >= 0; row--) {

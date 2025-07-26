@@ -1,0 +1,24 @@
+=====================================
+        INSTRUCOES DO JOGO
+=====================================
+
+O objetivo do jogo e organizar todas as colunas, de forma que todas fiquem cheias com um so caractere ou
+completamente vazias. A cada fase terminada voce ganha um ponto, para  maximizar  sua  pontuacao,  tente
+chegar na ultima fase!
+
+O jogo apresenta uma matriz de  simbolos  diferentes,  cada  fase  tem  uma  configuracao  diferente  de
+caracteres, colunas vazias, e alturas de coluna.
+
+Em cada turno voce pode mover os simbolos de uma coluna para outra, com as seguintes regras:
+- So e possivel mover caracteres do topo de uma coluna.
+- So pode mover para uma coluna que nao esteja cheia.
+- So pode empilhar simbolos sobre outros iguais, ou em colunas vazias.
+- Ao mover, todos os simbolos iguais vao ir junto, ate acabarem, ou encher a coluna destino
+
+Para realizar o movimento, digite dois numeros, representando a coluna fonte e destino, respectivamente.
+(EX: digitar 2 3 moveria as bolas da coluna 2 para 3)
+
+Ao final de cada fase, voce pode escolher sair e salvar sua pontuacao, ou continuar para a proxima, ate
+alcancar a ultima. Cuidado, pois cada fase fica mais dificil, e nao e permitido sair no meio.
+
+Boa sorte e divirta-se!

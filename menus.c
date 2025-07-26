@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,6 +39,28 @@ void printConfigMenu() {
     printf("-------------------------------------\n");
     printf("Digite sua escolha: ");
     return;
+}
+
+void printEndScreenMenu() {
+    clear();
+    printf("=====================================\n");
+    printf("   PARABENS POR TERMINAR O JOGO!     \n");
+    printf("=====================================\n\n");
+    printf("Seu score sera salvo!\n");
+    printf("Pressione <enter> para continuar...\n");
+    printf("-------------------------------------\n");
+}
+
+void printPromptContinueMenu(int level) {
+    clear();
+    printf("=====================================\n");
+    printf("   PARABENS POR TERMINAR A FASE %d   \n", level);
+    printf("=====================================\n\n");
+    printf("Deseja continuar?\n");
+    printf(" [S] Sim\n");
+    printf(" [N] Nao\n");
+    printf("-------------------------------------\n");
+    printf("Digite sua escolha: ");
 }
 
 void waitForEnter() {

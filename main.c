@@ -8,12 +8,15 @@ game logic
  - Menu print functions are always responsible for clearing the screen
  - Menu functions are responsible for input and output
  */
+#include "game.c"
+#include "menus.c"
+#include "ranking.c"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "game.c"
-#include "menus.c"
+#include <time.h>
+
 
 enum main_menu { JOGAR = 1, CONFIG, INTRUCOES, RANKING, SAIR };
 
@@ -26,9 +29,10 @@ enum config_menu {
 
 void mainMenu();
 void configMenu();
-void zerarRanking();
+void cleanRanking();
+void printInstructions();
 
-char username[50];
+Player curr;
 
 int main() {
     while (1) {
@@ -37,12 +41,13 @@ int main() {
         printf("    BEM-VINDO AO BAPC! (Ball APC)    \n");
         printf("=====================================\n\n");
         printf("Digite seu nickname para comecar: ");
-        fgets(username, 50, stdin);
-        username[strcspn(username, "\n")] = 0;  // Remove trailing newline
+        fgets(curr.name, 20, stdin);
+        curr.name[strcspn(curr.name, "\n")] = 0;  // Remove trailing newline
 
-        if (username[0] != '\n')
+        if (curr.name[0] != '\n')
             break;
     }
+
     mainMenu();
 }
 
@@ -56,17 +61,19 @@ void mainMenu() {
 
         switch (opcode) {
             case JOGAR:
-                setupLevels();
+                curr.score = setupGame();
+                if(curr.score != 0) addRank(curr);
                 break;
             case CONFIG:
                 configMenu();
                 break;
             case INTRUCOES:
-                printf("\nNao implementado, pressione Enter para continuar...");
+                printInstructions();
                 waitForEnter();
                 break;
             case RANKING:
-                printf("\nNao implementado, pressione Enter para continuar...");
+                printRankings();
+                printf("\nPressione Enter para continuar...");
                 waitForEnter();
                 break;
             case SAIR:
@@ -95,7 +102,7 @@ void configMenu() {
                 printf("\nConfirma reinicializar o ranking? (S/N) ");
                 char confirmation = getchar();
                 if (confirmation == 'S' || confirmation == 's') {
-                    zerarRanking();
+                    cleanRanking();
                     printf("Ranking zerado! Pressione Enter para continuar...");
                     waitForEnter();
                 }
@@ -124,15 +131,26 @@ void configMenu() {
     }
 }
 
-void zerarRanking() {
-    FILE* fdRanking = fopen("ranking.bin", "wb");
-    if (fdRanking == NULL) {
-        perror("ERRO! Falha ao abrir arquivo de ranking.\n");
+void printInstructions() {
+    clear();
+
+    FILE* fdInstructions = fopen("intructions.txt", "r");
+    if(fdInstructions == NULL) {
+        printf("ERRO! Ao tentar ler arquivo de instrucoes\n");
+        printf("Favor conferir diretorio\n");
         printf("Pressione Enter para continuar...");
         waitForEnter();
         return;
     }
-    int zero = 0;
-    fwrite(&zero, sizeof(int), 1, fdRanking);
-    fclose(fdRanking);
+
+
+    // copy text from intructions.txt
+    // done to avoid excessive printfs
+    char c;
+    while((c = fgetc(fdInstructions)) != EOF) {
+        putchar(c);
+    }
+
+    printf("\nPressione enter para retornar ao menu principal...");
+    return;
 }
