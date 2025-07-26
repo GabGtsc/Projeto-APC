@@ -14,6 +14,8 @@ typedef struct {
 
 void cleanRanking();
 void addRank();
+void sortPlayers(Player arr[], int count);
+int comparePlayers(Player a, Player b);
 
 void cleanRanking() {
     FILE* fdRanking = fopen("ranking.bin", "wb");
@@ -58,15 +60,48 @@ void printRankings() {
     printf("=====================================\n\n");
 
     while(fread(&curr, sizeof(Player), 1, fdRanking) == 1) {
-        printf("%-20s %d\n", curr.name, curr.score);
         playerCount++;
     }
 
     if (playerCount == 0) {
         printf("Nenhum ranking encontrado.\n");
+    } else {
+        rewind(fdRanking);
+        Player arr[playerCount];
+        fread(&arr, sizeof(Player), playerCount, fdRanking);
+        sortPlayers(arr, playerCount);
+
+        for(int i = 0; i < playerCount; i++) { printf("%20s %d\n", arr[i].name, arr[i].score); }
+
     }
 
+ 
     fclose(fdRanking);
+}
+
+void sortPlayers(Player arr[], int count) {
+    int sorted = 0;
+    while(!sorted) {
+        sorted = 1;
+
+        for(int i = 0; i < count - 1; i++) {
+            if(comparePlayers(arr[i], arr[i+1]) > 0) {
+                Player temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+
+                sorted = 0;
+            }
+        }
+    }
+}
+
+int comparePlayers(Player a, Player b) {
+    if(a.score != b.score) {
+        return b.score - a.score;
+    } else {
+        return strcmp(a.name, b.name);
+    }
 }
 
 #endif
